@@ -1,0 +1,66 @@
+{% extends 'CIVILIANS/civilianBase.html' %}
+{% block header %}
+{% load static %}
+
+{% if msg %}
+<script>
+    alert("{{msg}}")
+</script>
+{% endif %}
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>Send Pickup Request</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/civilianHome">Home</a></li>
+                <li>Pickup Request</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+
+
+<section class="contact-one contact-page">
+    <div class="container">
+        <form method="post" id="myForm" class="contact-one__form">
+            {% csrf_token %}
+            <div class="row" style="justify-content: center;">
+                <div class="col-xl-8 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" placeholder="Enter Approx Weight" pattern="[0-9]+" name="weight" required>
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <textarea name="notes" required placeholder="Enter Description" id="" cols="30"
+                            rows="8"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5"></div>
+                <div class="col-xl-6">
+                    <div class="contact-one__btn-box">
+                        <button type="submit" class="thm-btn contact-one__btn">ADD</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,186 @@
+{% extends 'ADMIN/adminBase.html' %}
+{% block header %}
+{% load static %}
+<style>
+    /* Image Upload */
+
+    .image-upload>input {
+        display: none;
+    }
+
+    #img {
+        cursor: pointer;
+        height: 150px;
+        width: 150px;
+        padding: 10px;
+        border-radius: 100px;
+    }
+
+    article,
+    aside,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
+        display: block;
+    }
+
+    /* Image upload */
+</style>
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>ADD STAFF</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/adminHome">Home</a></li>
+                <li>Add Staff</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<!--Contact One Start-->
+<section class="contact-one contact-page">
+    <div class="container">
+        <form method="post" id="myForm" enctype="multipart/form-data" class="contact-one__form contact-form-validated"
+            novalidate="novalidate" onsubmit="return formSubmitHandler()">
+            {% csrf_token %}
+            <div class="row">
+                <div class="image-upload text-center" style="margin-bottom: 30px">
+                    <label for="file-input">
+                        <img id="img" src="../static/assets/images/upload.png" alt="Upload Image"
+                            style="margin: auto" />
+                    </label>
+                    <h3>Select Image</h3>
+                    <input id="file-input" onchange="readURL(this)" name="imgfile" type="file" />
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" placeholder="Staff name" name="name">
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="email" id="email" onchange="inputEmail()" placeholder="Enter Email" name="email">
+                        <p id="mail-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" id="phone" placeholder="Phone number" onchange="inputPhone()" required
+                            name="phone" pattern="[6789][0-9]{9}" minlength="10" maxlength="10">
+                        <p id="phone-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" id="age" placeholder="Enter Age" onchange="inputAge()" required name="age"
+                            pattern="[0-9]{2}" minlength="2" maxlength="2">
+                        <p id="age-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" id="quali" placeholder="Ward Number" onchange="inputQuali()" required
+                            name="ward" pattern="[0-9]{2}" maxlength="2" minlength="1">
+                        <p id="quali-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="password" placeholder="Password" onchange="inputPassword()" id="password"
+                            name="password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
+                        <p id="pass-hint"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="contact-one__form-input-box text-message-box">
+                        <textarea name="address" id="address" placeholder="Address" required></textarea>
+                    </div>
+                    <div class="contact-one__btn-box">
+                        <button type="submit" class="thm-btn contact-one__btn mt-3">REGISTER NOW</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<!--Contact One End-->
+
+<script>
+    const inputEmail = () => {
+        let Email = document.getElementById('mail-hint');
+        Email.style = 'display:none';
+    }
+    const inputPassword = () => {
+        let Password = document.getElementById('pass-hint');
+        Password.style = 'display:none';
+    }
+    const inputPhone = () => {
+        let Phone = document.getElementById('phone-hint');
+        Phone.style = 'display:none';
+    }
+    const inputAge = () => {
+        let Age = document.getElementById('age-hint');
+        Age.style = 'display:none';
+    }
+    const inputQuali = () => {
+        let Qualification = document.getElementById('quali-hint');
+        Qualification.style = 'display:none';
+    }
+    function formSubmitHandler() {
+        let mailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        let passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        let phoneRegex = /^[6789]\d{9}$/;
+        let Email = document.getElementById('email').value;
+        let Password = document.getElementById('password').value;
+        let Phone = document.getElementById('phone').value;
+        let Address = document.getElementById('address').value;
+        let Age = document.getElementById('age').value;
+        let Qualification = document.getElementById('quali').value;
+        console.log(Qualification + "HIII")
+        let Hintmail = document.getElementById('mail-hint');
+        let Hintpass = document.getElementById('pass-hint');
+        let Hintphone = document.getElementById('phone-hint');
+        let Hintage = document.getElementById('age-hint');
+        let Hintquali = document.getElementById('quali-hint');
+        if (!mailregex.test(Email)) {
+            Hintmail.innerHTML = 'Invalid format';
+            Hintmail.style = 'display:block'
+            return false
+        } else if (!phoneRegex.test(Phone)) {
+            Hintphone.innerHTML = 'Invalid Number';
+            Hintphone.style = 'display:block'
+            return false
+        } else if (Age == "") {
+            Hintage.innerHTML = 'Enter Age';
+            Hintage.style = 'display:block'
+            return false
+        } else if (Qualification == "") {
+            Hintquali.innerHTML = 'Enter Ward Number';
+            Hintquali.style = 'display:block'
+            return false
+        } else if (!passRegex.test(Password)) {
+            Hintpass.innerHTML = 'Invalid Password';
+            Hintpass.style = 'display:block'
+            return false
+        } else if (Address != "") {
+            const form = document.getElementById('myForm');
+            form.submit()
+            return true
+        }
+    }
+</script>
+
+{% endblock %}

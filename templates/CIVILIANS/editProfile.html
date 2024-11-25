@@ -1,0 +1,209 @@
+{% extends 'CIVILIANS/civilianBase.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    /* Image Upload */
+
+    .image-upload>input {
+        display: none;
+    }
+
+    #img {
+        cursor: pointer;
+        height: 150px;
+        width: 150px;
+        padding: 10px;
+        border-radius: 100px;
+    }
+
+    article,
+    aside,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
+        display: block;
+    }
+
+    /* Image upload */
+</style>
+
+
+{% if msg %}
+<script>
+    alert("{{msg}}");
+</script>
+{% endif %}
+
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>My Profile</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/civilianHome">Home</a></li>
+                <li>My Profile</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<!--Contact One Start-->
+<section class="contact-one contact-page">
+    <div class="container">
+        <form method="post" id="myForm" enctype="multipart/form-data" class="contact-one__form contact-form-validated"
+            novalidate="novalidate" onsubmit="return formSubmitHandler()">
+            {% csrf_token %}
+            <div class="row">
+                <div class="image-upload text-center" style="margin-bottom: 30px">
+                    <label for="file-input">
+                        <img id="img" src="../static/media/{{data.image}}" alt="Upload Image" style="margin: auto" />
+                    </label>
+                    <h3>Select Image</h3>
+                    <input id="file-input" onchange="readURL(this)" name="imgfile" type="file" />
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" value="{{data.name}}" required placeholder="Your name" name="name">
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="email" id="email" value="{{data.email}}" required onchange="inputEmail()"
+                            placeholder="Enter Email" name="email">
+                        <p id="mail-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" id="phone" placeholder="Phone number" onchange="inputPhone()" required
+                            name="phone" pattern="[6789][0-9]{9}" value="{{data.phone}}" minlength="10" maxlength="10">
+                        <p id="phone-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" placeholder="House Number" value="{{data.houseno}}" pattern="[0-9]+"
+                            name="houseno" required>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <select name="ward" id="">
+                            <option disabled>Choose Ward</option>
+                            <option value="{{ data.ward }}" selected>{{ data.ward }}</option>
+                            {% for i in wardNumber %}
+                            {% if i.ward != data.ward %}
+                            <option value="{{ i.ward }}">{{ i.ward }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+
+                    </div>
+                </div>
+                <div class=" col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="password" placeholder="Password" onchange="inputPassword()" id="password"
+                            name="password" value="{{data.loginid.viewPass}}"
+                            pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters">
+                        <p id="pass-hint"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="contact-one__form-input-box text-message-box">
+                        <textarea name="message" id="address" placeholder="Address" required>{{data.address}}</textarea>
+                    </div>
+                    <div class="contact-one__btn-box text-center">
+                        <button type="submit" class="thm-btn contact-one__btn mt-3">UPDATE PROFILE</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<!--Contact One End-->
+
+<script>
+    const inputEmail = () => {
+        let Email = document.getElementById('mail-hint');
+        Email.style = 'display:none';
+    }
+    const inputPassword = () => {
+        let Password = document.getElementById('pass-hint');
+        Password.style = 'display:none';
+    }
+    const inputPhone = () => {
+        let Phone = document.getElementById('phone-hint');
+        Phone.style = 'display:none';
+    }
+    function formSubmitHandler() {
+        let mailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        let passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        let phoneRegex = /^[6789]\d{9}$/;
+        let Email = document.getElementById('email').value;
+        let Password = document.getElementById('password').value;
+        let Phone = document.getElementById('phone').value;
+        let Address = document.getElementById('address').value;
+        let Hintmail = document.getElementById('mail-hint');
+        let Hintpass = document.getElementById('pass-hint');
+        let Hintphone = document.getElementById('phone-hint');
+        if (!mailregex.test(Email)) {
+            Hintmail.innerHTML = 'Invalid format';
+            Hintmail.style = 'display:block'
+            return false
+        } else if (!phoneRegex.test(Phone)) {
+            Hintphone.innerHTML = 'Invalid Number';
+            Hintphone.style = 'display:block'
+            return false
+        } else if (!passRegex.test(Password)) {
+            Hintpass.innerHTML = 'Invalid Password';
+            Hintpass.style = 'display:block'
+            return false
+        } else if (Address != "") {
+            const form = document.getElementById('myForm');
+            form.submit()
+            return true
+        }
+    }
+</script>
+
+<script>
+    $(function () {
+        // $("button[type='submit']").click(function (event) {
+        //     var $fileUpload = $("input[type='file']");
+        //     if (parseInt($fileUpload.get(0).files.length) === 0) {
+        //         alert("Please select an Image");
+        //         event.preventDefault(); // Prevent form submission
+        //     }
+        // });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#img").attr("src", e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#file-input").on("change", function () {
+            readURL(this);
+        });
+    });
+</script>
+
+
+
+
+{% endblock %}

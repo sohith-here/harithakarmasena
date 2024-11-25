@@ -1,0 +1,81 @@
+{% extends 'CIVILIANS/civilianBase.html' %}
+{% block header %}
+{% load static %}
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>View Suggestions</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/civilianHome">Home</a></li>
+                <li>View Suggestions</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+
+<center>
+    <!-- <h1 class="m-3 bread">My Products</h1> -->
+    <input type="text" class="form-control m-3" id="searchInput" style="width: 90%;" placeholder="Search...">
+    <table id="table" class="table table-bordered" style="width: 90%;">
+        <thead>
+            <tr style="text-align: center;">
+                <th>Subject</th>
+                <th>Details</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            {% for i in data %}
+            <tr id="row{{ forloop.counter }}" style="text-align: center;">
+                <td>
+                    {{i.subject}}
+                </td>
+                <td>
+                    {{i.details}}
+                </td>
+                <td style="white-space: nowrap;">
+                    {{i.date}}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div id="noMatchingData" style="display: none;">
+        <h1 class="m-5">No Results Found</h1>
+    </div>
+</center>
+
+
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Handle search input
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            var rows = $("#tableBody tr");
+            var matchingRows = rows.filter(function () {
+                var rowText = $(this).text().toLowerCase();
+                return rowText.indexOf(value) > -1;
+            });
+            rows.hide(); // Hide all rows initially
+            matchingRows.show(); // Show matching rows
+            if (matchingRows.length === 0) {
+                $("#noMatchingData").show(); // Show message if no matching rows
+                $("#table").hide();
+            } else {
+                $("#noMatchingData").hide(); // Hide message if there are matching rows
+                $("#table").show();
+            }
+        });
+    });
+</script>
+
+{% endblock %}

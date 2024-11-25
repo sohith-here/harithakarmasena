@@ -1,0 +1,63 @@
+{% extends 'CIVILIANS/civilianBase.html' %}
+{% block header %}
+{% load static %}
+
+{% if msg %}
+<script>
+    alert("{{msg}}")
+</script>
+{% endif %}
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>My Profile</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/civilianHome">Home</a></li>
+                <li>My Profile</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+
+<section class="team-one">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-4 col-lg-4"></div>
+            <div class="col-xl-4 col-lg-4 wow fadeInUp" data-wow-delay="100ms">
+                <!--Team One Single-->
+                <div class="team-one__sngle">
+                    <div class="team-one__img">
+                        <!-- <img src="https://drive.google.com/uc?export=view&id=1Tkkw2H5xVYbu_-ekPV7B9Ze45hhbN8de" id="img"
+                            alt=""> -->
+                        <img src="/static/media/{{data.image}}" id="img" alt="">
+                        <div class="team-one__shape">
+                            <img src="{% static 'assets/images/shapes/team-one-shape.png' %}" alt="">
+                        </div>
+                    </div>
+                    <div class="team-one__content">
+                        <h3 class="team-one__name">{{data.name}}</h3>
+                        <h4>Email -{{data.email}}</h4>
+                        <h4>Phone -{{data.phone}}</h4>
+                        <h4>Address -{{data.address}}</h4>
+                        <h4>House Number -{{data.houseno}}</h4>
+                        <h4>Ward Number -{{data.ward}}</h4>
+                        <hr>
+                        <center>
+                            <a href="/editProfile?id={{data.loginid_id}}" class="btn btn-success">UPDATE</a>
+                        </center>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-4"></div>
+    </div>
+</section>
+
+
+{% endblock %}

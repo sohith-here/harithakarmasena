@@ -1,0 +1,60 @@
+{% extends 'CIVILIANS/civilianBase.html' %}
+{% block header %}
+{% load static %}
+
+{% if msg %}
+<script>
+    alert("{{msg}}")
+</script>
+{% endif %}
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>My Activity</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/civilianHome">Home</a></li>
+                <li>My Activity</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+{% if myData %}
+<h1 class="text-center">My Activity</h1>
+<br>
+<div class="container-fluid">
+    <table class="table table-bordered table-hover table striped">
+        <thead>
+            <tr>
+                <th>Staff Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>House Number</th>
+                <th>Waste Weight</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in myData %}
+            <tr>
+                <td>{{i.staff_id.name}}</td>
+                <td>{{i.civil_id.phone}}</td>
+                <td>{{i.civil_id.email}}</td>
+                <td>{{i.civil_id.address}}</td>
+                <td>{{i.civil_id.houseno}}</td>
+                <td>{{i.weight}} Kg</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+{% endif %}
+
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'STAFF/staffBase.html' %} {% block header %} {% load static %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg);">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>Facility</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/staffHome">Home</a></li>
+                <li>View Facility</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+<canvas id="storageChart" width="400" height="400"></canvas>
+
+<script>
+    var capacity = 500;
+    var usedSpace = 500 - parseInt("{{capacity}}");
+    console.log("{{capacity}}")
+    if (usedSpace == 500) {
+        alert("Facility is at maximum capacity")
+    }
+    // Calculate available space
+    var availableSpace = capacity - parseInt(usedSpace);
+
+    // Ensure that availableSpace is always non-negative
+    availableSpace = Math.max(availableSpace, 0);
+
+    // Get the canvas element and create a context
+    var ctx = document.getElementById('storageChart').getContext('2d');
+
+    // Define the data for the pie chart
+    var data = {
+        labels: ['Occupied Space', 'Available Space'],
+        datasets: [{
+            data: [usedSpace, availableSpace],
+            backgroundColor: ['red', 'green']
+        }]
+    };
+
+    // Create the pie chart
+    var storagePieChart = new Chart(ctx, {
+        type: 'pie',
+        data: data,
+    });
+</script>
+
+
+{% endblock %}

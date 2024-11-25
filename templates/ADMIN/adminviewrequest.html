@@ -1,0 +1,166 @@
+{% extends 'ADMIN/adminBase.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    /* table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 95%;
+        margin: 10px;
+    }
+
+    
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    } */
+    td,
+    th {
+        text-align: center !important;
+    }
+
+    a {
+        text-decoration: none !important;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>Pickup Requests</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/adminHome">Home</a></li>
+                <li>Requests</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<center>
+    {% if data %}
+    <h1 class="m-3 bread"></h1>
+    <input type="text" class="form-control" id="searchInput" style="width: 90%;" placeholder="Search...">
+    <table id="table" border="1" class="table table-bordered mt-3" style="width: 90%;">
+        <thead>
+            <tr>
+                <th style="border: 1px;color: black;">Name</th>
+                <th>Weight</th>
+                <th>Description</th>
+                <th>Requested On</th>
+                <th>Staff</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            {% for i in data %}
+            <tr id="row{{ forloop.counter }}">
+                <td>{{ i.civil_id.name }}</td>
+                <td>{{ i.weight }} Kg</td>
+                <td>{{ i.desc }}</td>
+                <td>{{ i.date }}</td>
+                {% if i.staff_id %}
+                <td>{{ i.staff_id.name }}</td>
+                {% else %}
+                <td><a href="/assignstaff?id={{i.id}}" class="btn btn-success reply-btn" data-toggle="modal"
+                        data-target="#myModal" data-reply="{{ i.id }}">Assign</a></td>
+                {% endif %}
+                <td>{{ i.status }}</td>
+                <!-- <td style="text-align: center;">
+                    <div style="display: flex;justify-content: center;">
+                        <a href="/updateProduct?id={{i.id}}" class="btn btn-outline-success"
+                            style="margin-right: 8px;">Update</a>
+                        <a href="/deleteProduct?id={{i.id}}" class="btn btn-outline-danger">Delete</a>
+                    </div>
+                </td> -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div id="noMatchingData" style="display: none;">
+        <h1 class="m-5">No Results Found</h1>
+    </div>
+    {% else %}
+    <h1 class="m-3">No Data Found</h1>
+    {% endif %}
+</center>
+
+<!-- The Modal -->
+<div class="modal" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Assign Staff</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <form id="replyForm" method="post" action="/assignstaff/">
+                    {% csrf_token %}
+                    <select name="staff" class="form-select" id="">
+                        <option selected disabled>Select Staff</option>
+                        {% for i in staffData %}
+                        <option value="{{i.id}}">{{i.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" id="replyId" name="id">
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Assign</button>
+                </form>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS and jQuery -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Handle search input
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            var rows = $("#tableBody tr");
+            var matchingRows = rows.filter(function () {
+                var rowText = $(this).text().toLowerCase();
+                return rowText.indexOf(value) > -1;
+            });
+            rows.hide(); // Hide all rows initially
+            matchingRows.show(); // Show matching rows
+            if (matchingRows.length === 0) {
+                $("#noMatchingData").show(); // Show message if no matching rows
+                $("#table").hide();
+            } else {
+                $("#noMatchingData").hide(); // Hide message if there are matching rows
+                $("#table").show();
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('.reply-btn').click(function () {
+            var replyValue = $(this).data('reply');
+            $('#replyId').val(replyValue);
+        });
+    });
+</script>
+
+
+{% endblock %}

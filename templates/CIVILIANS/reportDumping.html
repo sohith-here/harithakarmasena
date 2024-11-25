@@ -1,0 +1,173 @@
+{% extends 'CIVILIANS/civilianBase.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    /* Image Upload */
+
+    .image-upload>input {
+        display: none;
+    }
+
+    #img {
+        cursor: pointer;
+        height: 150px;
+        width: 150px;
+        padding: 10px;
+        border-radius: 100px;
+    }
+
+    article,
+    aside,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
+        display: block;
+    }
+
+    /* Image upload */
+
+    #image {
+        height: 200px;
+        width: 200px;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    td {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* zoom on hover with animation and overlap over everything*/
+    #image:hover {
+        transform: scale(1.5);
+        transition: 0.5s;
+        cursor: pointer;
+        z-index: 100;
+    }
+</style>
+
+{% if msg %}
+<script>
+    alert("{{msg}}")
+</script>
+{% endif %}
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>Report Dumping</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/civilianHome">Home</a></li>
+                <li>Report Dumping</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<!--Contact One Start-->
+<section class="contact-one contact-page">
+    <div class="container">
+        <form method="post" id="myForm" enctype="multipart/form-data" class="contact-one__form" novalidate="novalidate">
+            {% csrf_token %}
+            <div class="row">
+                <div class="image-upload text-center" style="margin-bottom: 30px">
+                    <label for="file-input">
+                        <img id="img" src="../static/assets/images/upload.png" alt="Upload Image"
+                            style="margin: auto" />
+                    </label>
+                    <h3>Select Image</h3>
+                    <input id="file-input" onchange="readURL(this)" name="imgfile" type="file" />
+                </div>
+                <div class=" col-xl-12 col-lg-12 col-md-12">
+                    <div class="contact-one__form-input-box">
+                        <div class="contact-one__form-input-box text-message-box">
+                            <textarea name="remarks" id="address" placeholder="Enter Remarks" required></textarea>
+                        </div>
+                    </div>
+                    <div class="contact-one__form-input-box">
+                        <div class="contact-one__form-input-box text-message-box">
+                            <textarea name="address" id="address" placeholder="Enter Address" required></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="contact-one__btn-box text-center">
+                        <button type="submit" class="thm-btn contact-one__btn mt-3">REPORT NOW</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<!--Contact One End-->
+
+{% if myReports %}
+<h1 class="text-center">My Reports</h1>
+<br>
+<div class="container-fluid">
+    <table class="table table-bordered table-hover table striped">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Address</th>
+                <th>Date</th>
+                <th>Image</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in myReports %}
+            <tr>
+                <td>{{i.desc}}</td>
+                <td>{{i.address}}</td>
+                <td>{{i.date}}</td>
+                <!-- open image in another page -->
+                <td><img id="image" src="../static/media/{{i.image}}" alt=""></td>
+                <td>{{i.status}}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+{% endif %}
+
+<script>
+    $(function () {
+        $("button[type='submit']").click(function (event) {
+            var $fileUpload = $("input[type='file']");
+            if (parseInt($fileUpload.get(0).files.length) === 0) {
+                alert("Please select an Image");
+                event.preventDefault(); // Prevent form submission
+            }
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#img").attr("src", e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        $("#file-input").on("change", function () {
+            readURL(this);
+        });
+    });
+</script>
+{% endblock %}

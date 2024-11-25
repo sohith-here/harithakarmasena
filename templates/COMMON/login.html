@@ -1,0 +1,72 @@
+{% extends 'COMMON/commonBase.html' %}
+{% block header %}
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg)">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>LOGIN</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/index">Home</a></li>
+                <li>Login</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<!--Contact One Start-->
+<section class="contact-one contact-page">
+    <div class="container">
+        <form method="post" id="myForm" class="contact-one__form contact-form-validated"
+            onsubmit="return formSubmitHandler()">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="email" id="email" onchange="inputEmail()" placeholder="Enter Email" name="email">
+                        <p id="mail-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="password" placeholder="Enter Password" name="password" required>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="contact-one__btn-box">
+                        <button type="submit" class="thm-btn contact-one__btn">LOGIN</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<!--Contact One End-->
+
+<script>
+    const inputEmail = () => {
+        let Email = document.getElementById('mail-hint');
+        Email.style = 'display:none';
+    }
+    function formSubmitHandler() {
+        let mailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        let Email = document.getElementById('email').value;
+        let Hintmail = document.getElementById('mail-hint');
+        if (!mailregex.test(Email)) {
+            Hintmail.innerHTML = 'Invalid format';
+            Hintmail.style = 'display:block'
+            return false
+        } else {
+            const form = document.getElementById('myForm');
+            form.submit()
+            return true
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends 'COMMON/commonBase.html' %} {% block header %}
+
+<style>
+    /* Image Upload */
+
+    .image-upload>input {
+        display: none;
+    }
+
+    #img {
+        cursor: pointer;
+        height: 150px;
+        width: 150px;
+        padding: 10px;
+        border-radius: 100px;
+    }
+
+    article,
+    aside,
+    figure,
+    footer,
+    header,
+    hgroup,
+    menu,
+    nav,
+    section {
+        display: block;
+    }
+
+    /* Image upload */
+</style>
+
+{% if msg %}
+<script>
+    alert("{{msg}}");
+</script>
+{% endif %}
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="
+      background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg);
+    "></div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>REGISTER NOW</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/index">Home</a></li>
+                <li>Register</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<!--Contact One Start-->
+<section class="contact-one contact-page">
+    <div class="container">
+        <form method="post" id="myForm" enctype="multipart/form-data" class="contact-one__form contact-form-validated"
+            novalidate="novalidate" onsubmit="return formSubmitHandler()">
+            {% csrf_token %}
+            <div class="row">
+                <div class="image-upload text-center" style="margin-bottom: 30px">
+                    <label for="file-input">
+                        <img id="img" src="../static/assets/images/upload.png" alt="Upload Image"
+                            style="margin: auto" />
+                    </label>
+                    <h3>Select Image</h3>
+                    <input id="file-input" onchange="readURL(this)" name="imgfile" type="file" />
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" required placeholder="Your name" name="name" />
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="email" required id="email" onchange="inputEmail()" placeholder="Enter Email"
+                            name="email" />
+                        <p id="mail-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" id="phone" placeholder="Phone number" onchange="inputPhone()" required
+                            name="phone" pattern="[6789][0-9]{9}" minlength="10" maxlength="10" />
+                        <p id="phone-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" placeholder="House Number" pattern="[0-9]+" name="houseno" required />
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <select name="ward" id="">
+                            <option selected disabled>Choose Ward</option>
+                            {% for i in wardNumber %}
+                            <option value="{{i.ward}}">{{i.ward}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="password" placeholder="Password" onchange="inputPassword()" id="password"
+                            name="password" required pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" />
+                        <p id="pass-hint"></p>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" placeholder="Starting Time" onfocus="(this.type='time')"
+                            onblur="(this.type='text')" id="stime" name="stime" required />
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <input type="text" placeholder="Ending Time" onfocus="(this.type='time')"
+                            onblur="(this.type='text')" onchange="convertTime()" id="etime" name="etime" required />
+                        <input type="hidden" name="time" id="convertedTime">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="contact-one__form-input-box text-message-box">
+                        <textarea name="message" id="address" placeholder="Address" required></textarea>
+                    </div>
+                    <div class="contact-one__btn-box">
+                        <button type="submit" class="thm-btn contact-one__btn mt-3">
+                            REGISTER NOW
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<!--Contact One End-->
+
+<script>
+    const inputEmail = () => {
+        let Email = document.getElementById("mail-hint");
+        Email.style = "display:none";
+    };
+    const inputPassword = () => {
+        let Password = document.getElementById("pass-hint");
+        Password.style = "display:none";
+    };
+    const inputPhone = () => {
+        let Phone = document.getElementById("phone-hint");
+        Phone.style = "display:none";
+    };
+    function formSubmitHandler() {
+        let mailregex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        let passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        let phoneRegex = /^[6789]\d{9}$/;
+        let Email = document.getElementById("email").value;
+        let Password = document.getElementById("password").value;
+        let Phone = document.getElementById("phone").value;
+        let Address = document.getElementById("address").value;
+        let Hintmail = document.getElementById("mail-hint");
+        let Hintpass = document.getElementById("pass-hint");
+        let Hintphone = document.getElementById("phone-hint");
+        if (!mailregex.test(Email)) {
+            Hintmail.innerHTML = "Invalid format";
+            Hintmail.style = "display:block";
+            return false;
+        } else if (!phoneRegex.test(Phone)) {
+            Hintphone.innerHTML = "Invalid Number";
+            Hintphone.style = "display:block";
+            return false;
+        } else if (!passRegex.test(Password)) {
+            Hintpass.innerHTML = "Invalid Password";
+            Hintpass.style = "display:block";
+            return false;
+        } else if (Address != "") {
+            const form = document.getElementById("myForm");
+            form.submit();
+            return true;
+        }
+    }
+</script>
+
+<script>
+    function convertTime() {
+        var stime = document.getElementById('stime').value;
+        var etime = document.getElementById('etime').value;
+
+        var shours = parseInt(stime.split(':')[0]);
+        var sminutes = parseInt(stime.split(':')[1]);
+
+        var ehours = parseInt(etime.split(':')[0]);
+        var eminutes = parseInt(etime.split(':')[1]);
+
+        // Determine if start time is AM or PM
+        var s_ampm = (shours >= 12 && shours !== 24) ? 'PM' : 'AM';
+        if (shours === 0) shours = 12; // Handle midnight (12 AM)
+        if (shours > 12) shours -= 12; // Convert from 24-hour to 12-hour format
+
+        // Append leading zero to minutes if needed
+        sminutes = sminutes < 10 ? '0' + sminutes : sminutes;
+
+        // Determine if end time is AM or PM
+        var e_ampm = (ehours >= 12 && ehours !== 24) ? 'PM' : 'AM';
+        if (ehours === 0) ehours = 12; // Handle midnight (12 AM)
+        if (ehours > 12) ehours -= 12; // Convert from 24-hour to 12-hour format
+
+        // Append leading zero to minutes if needed
+        eminutes = eminutes < 10 ? '0' + eminutes : eminutes;
+
+        // Display the converted start and end times
+        document.getElementById('convertedTime').value = shours + ':' + sminutes + ' ' + s_ampm + ' - ' + ehours + ':' + eminutes + ' ' + e_ampm;
+    }
+</script>
+
+
+
+<!-- // Convert hours to AM/PM format
+            var ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // Handle midnight (0 hours)
+
+            // Append leading zero to minutes if needed
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+
+            // Display the converted time
+            document.getElementById('convertedTime').innerText = hours + ':' + minutes + ' ' + ampm; -->
+
+
+{% endblock %}

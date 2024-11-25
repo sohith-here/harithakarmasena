@@ -1,0 +1,110 @@
+{% extends 'STAFF/staffBase.html' %}
+{% block header %}
+{% load static %}
+
+<style>
+    td {
+        text-align: center;
+    }
+</style>
+
+<!--Page Header Start-->
+<section class="page-header">
+    <div class="page-header-bg" style="background-image: url(../static/assets/images/backgrounds/page-header-bg.jpg);">
+    </div>
+    <div class="container">
+        <div class="page-header__inner">
+            <h2>Individual Activity</h2>
+            <ul class="thm-breadcrumb list-unstyled">
+                <li><a href="/staffHome">Home</a></li>
+                <li>View Activity</li>
+            </ul>
+        </div>
+    </div>
+</section>
+<!--Page Header End-->
+
+<!--Contact One Start-->
+
+<section class="contact-one contact-page">
+    <div class="container">
+        <form method="post" id="myForm" class="contact-one__form contact-form-validated" action="/individualActivity/">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xl-3 col-lg-3 col-md-3"></div>
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="contact-one__form-input-box">
+                        <select name="person" id="personSelect">
+                            <option selected disabled>Select Person</option>
+                            {% for i in civData %}
+                            <option value="{{ i.id }}">{{ i.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div id="conditionalContent"></div>
+        <h1 class="text-center" id="noDataText" style="display: none;">No Data</h1>
+        <h1 class="text-center" id="total" style="display: none;"></h1>
+    </div>
+</section>
+<!--Contact One End-->
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#personSelect').on('change', function () {
+            var selectedValue = $(this).val();
+
+            if (selectedValue !== '') {
+                $.ajax({
+                    type: 'POST',
+                    url: '/individualActivity/', // Replace with your correct URL
+                    data: {
+                        csrfmiddlewaretoken: '{{ csrf_token }}',
+                        person: selectedValue
+                    },
+                    success: function (response) {
+                        var wasteData = response.wasteData;
+                        var conditionalContent = $('#conditionalContent');
+                        var noDataText = $('#noDataText');
+                        var totalText = $('#total');
+                        var totalWaste = 0;
+
+                        if (wasteData.length > 0) {
+                            // Build the HTML for displaying wasteData
+                            var html = '<table class="table table-bordered table-hover table-striped"><thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Address</th><th>House Number</th><th>Waste Weight</th></tr></thead><tbody>';
+                            for (var i = 0; i < wasteData.length; i++) {
+                                totalWaste += parseFloat(wasteData[i].weight);
+                                html += '<tr><td>' + wasteData[i].name + '</td><td>' + wasteData[i].phone + '</td><td>' + wasteData[i].email + '</td><td>' + wasteData[i].address + '</td><td>' + wasteData[i].houseno + '</td><td>' + wasteData[i].weight + ' Kg</td></tr>';
+                            }
+                            html += '</tbody></table>';
+                            conditionalContent.html(html);
+
+                            // Show content and hide "NO DATA" text
+                            conditionalContent.show();
+                            var totalValue = "Total Waste Collected " + totalWaste + "Kg";
+                            totalText.html(totalValue);
+                            totalText.show();
+                            noDataText.hide();
+                        } else {
+                            // If wasteData is empty, hide content and show "NO DATA" text
+                            conditionalContent.hide();
+                            noDataText.show();
+                            totalText.hide();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(error);
+                    }
+                });
+            } else {
+                // If "Select Person" is chosen, hide the conditional content and show "NO DATA" text
+                $('#conditionalContent').hide();
+                $('#noDataText').show();
+            }
+        });
+    });
+</script>
+{% endblock %}
